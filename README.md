@@ -9,6 +9,7 @@ Sistema completo de gestión inmobiliaria desarrollado en Django con interfaces 
 - [Instalación Local](#-instalación-local)
 - [Configuración](#-configuración)
 - [Uso del Sistema](#-uso-del-sistema)
+- [Gestión de Usuarios y Permisos](#-gestión-de-usuarios-y-permisos)
 - [Deploy en Hosting Compartido](#-deploy-en-hosting-compartido)
 - [Deploy en VPS](#-deploy-en-vps)
 - [Deploy en PaaS (Railway, Render, etc.)](#-deploy-en-paas)
@@ -180,6 +181,223 @@ http://localhost:8000/admin/
    - Ordenamiento por drag & drop
    - Previsualizaciones en admin
    - Gestión de imagen principal (orden 0)
+
+## 👥 Gestión de Usuarios y Permisos
+
+El sistema incluye un sistema de permisos robusto con tres niveles de acceso diferentes. Solo los superusuarios pueden gestionar usuarios y grupos, garantizando la seguridad del sistema.
+
+### 🔐 Niveles de Permisos
+
+#### **👑 Superusuario**
+- Acceso completo al sistema
+- Puede gestionar usuarios y grupos
+- Puede crear, editar y eliminar todos los registros
+- Ve todas las secciones del admin
+
+#### **📝 Editor** 
+- Puede ver, crear y editar todos los modelos de inmobiliaria
+- **NO puede eliminar** registros
+- **NO puede gestionar** usuarios ni grupos
+- Ideal para personal de ventas y administradores de contenido
+
+#### **👀 Consultor**
+- **Solo lectura** en todos los modelos
+- **NO puede crear, editar ni eliminar** registros  
+- **NO puede gestionar** usuarios ni grupos
+- Ideal para personal de consulta y reportes
+
+### 🔧 Crear Usuarios Paso a Paso
+
+#### **1. Iniciar Sesión como Superusuario**
+```
+http://localhost:8000/admin/
+```
+Usar las credenciales del superusuario creado durante la instalación.
+
+#### **2. Crear Grupos (Solo una vez)**
+
+**Ir a: Authentication and Authorization > Groups**
+
+##### **Grupo "Consultores" (Solo Lectura):**
+1. Click en **"Add Group"**
+2. **Nombre:** `Consultores`
+3. **Seleccionar SOLO permisos "Can view":**
+   - ✓ Can view assesor
+   - ✓ Can view barrios  
+   - ✓ Can view caracteristica
+   - ✓ Can view city
+   - ✓ Can view estados inmueble
+   - ✓ Can view etiquetas
+   - ✓ Can view imagenes
+   - ✓ Can view inmuebles
+   - ✓ Can view inmueble caracteristicas
+   - ✓ Can view tipo consignacion
+   - ✓ Can view tipos inmueble
+   - ✓ Can view usos inmueble
+4. **Guardar**
+
+##### **Grupo "Editores" (Lectura + Escritura sin Eliminar):**
+1. Click en **"Add Group"**
+2. **Nombre:** `Editores`
+3. **Seleccionar permisos "Can view", "Can add", "Can change" (NO "Can delete"):**
+
+   Para cada modelo, marcar:
+   - ✓ Can view [modelo] 
+   - ✓ Can add [modelo]
+   - ✓ Can change [modelo]
+   - ❌ Can delete [modelo] (NO marcar)
+
+   **Modelos a configurar:**
+   - assesor, barrios, caracteristica, city, estados inmueble
+   - etiquetas, imagenes, inmuebles, inmueble caracteristicas
+   - tipo consignacion, tipos inmueble, usos inmueble
+
+4. **Guardar**
+
+#### **3. Crear Usuarios Individuales**
+
+**Ir a: Authentication and Authorization > Users**
+
+##### **Para crear un Editor:**
+
+1. **Click en "Add User"**
+
+2. **Paso 1 - Información Básica:**
+   ```
+   Username: editor_maria
+   Password: ContraseñaSegura123!
+   Password confirmation: ContraseñaSegura123!
+   ```
+   Click **"Save and continue editing"**
+
+3. **Paso 2 - Información Completa:**
+   ```
+   Personal info:
+   ├── First name: María
+   ├── Last name: García  
+   └── Email address: maria.garcia@ahoinmobiliaria.com
+   
+   Permissions:
+   ├── Active: ✓ (marcado)
+   ├── Staff status: ✓ (marcado - IMPORTANTE para acceder al admin)
+   └── Superuser status: ✗ (NO marcado)
+   
+   Groups:
+   ├── Seleccionar "Editores" del lado izquierdo
+   └── Click en la flecha → para moverlo al lado derecho
+   
+   User permissions:
+   └── Dejar vacío (se usan los permisos del grupo)
+   ```
+
+4. **Click "Save"**
+
+##### **Para crear un Consultor:**
+
+1. **Click en "Add User"**
+
+2. **Paso 1:**
+   ```
+   Username: consultor_juan
+   Password: ContraseñaSegura456!
+   ```
+   Click **"Save and continue editing"**
+
+3. **Paso 2:**
+   ```
+   Personal info:
+   ├── First name: Juan
+   ├── Last name: Pérez
+   └── Email address: juan.perez@ahoinmobiliaria.com
+   
+   Permissions:
+   ├── Active: ✓
+   ├── Staff status: ✓ (IMPORTANTE para acceder al admin)
+   └── Superuser status: ✗
+   
+   Groups:
+   └── Seleccionar "Consultores" → mover al lado derecho
+   ```
+
+4. **Click "Save"**
+
+#### **4. Verificar Funcionamiento**
+
+##### **Probar Usuario Editor:**
+1. **Cerrar sesión** del superusuario
+2. **Iniciar sesión** con `editor_maria`
+3. **Verificar que:**
+   - ✅ Ve todos los modelos de inmobiliaria
+   - ✅ Puede crear nuevos registros (botón "Add")
+   - ✅ Puede editar registros existentes
+   - ❌ NO ve botones de "Delete" 
+   - ❌ NO ve sección "Authentication and Authorization"
+
+##### **Probar Usuario Consultor:**
+1. **Cerrar sesión** del editor
+2. **Iniciar sesión** con `consultor_juan`
+3. **Verificar que:**
+   - ✅ Ve todos los modelos de inmobiliaria
+   - ✅ Puede ver detalles de registros
+   - ❌ NO ve botones "Add" ni "Change"
+   - ❌ NO puede crear ni editar registros
+   - ❌ NO ve sección "Authentication and Authorization"
+
+### 🔄 Gestión de Contraseñas
+
+**Para cambiar contraseñas (como superusuario):**
+
+1. **Ir a:** Authentication and Authorization > Users
+2. **Click** en el usuario deseado
+3. **Click** en "this form" al lado de "Password"
+4. **Introducir** nueva contraseña
+5. **Confirmar** contraseña
+6. **Guardar**
+
+### 🛡️ Seguridad Implementada
+
+- **Aislamiento total:** Los usuarios no-superuser no pueden ver información de otros usuarios
+- **Gestión centralizada:** Solo superusuarios pueden crear/modificar cuentas
+- **Permisos granulares:** Control específico por modelo y acción
+- **Segregación de funciones:** Cada rol tiene acceso solo a lo necesario
+
+### 📝 Plantilla de Usuarios Recomendada
+
+```
+🏢 ESTRUCTURA ORGANIZACIONAL SUGERIDA:
+
+👑 admin_general (Superusuario)
+├── Gerente General / Director TI
+└── Acceso completo al sistema
+
+📝 editor_ventas (Editor)  
+├── Agentes de ventas
+├── Coordinadores inmobiliarios
+└── Pueden gestionar propiedades completas
+
+📝 editor_marketing (Editor)
+├── Equipo de marketing
+├── Fotógrafos / Community managers  
+└── Pueden actualizar descripciones e imágenes
+
+👀 consultor_atencion (Consultor)
+├── Atención al cliente
+├── Recepcionistas
+└── Solo consulta de información
+
+👀 consultor_reportes (Consultor)
+├── Contadores / Auditores
+├── Analistas de datos
+└── Solo lectura para reportes
+```
+
+### ⚠️ Buenas Prácticas
+
+1. **Contraseñas seguras:** Mínimo 12 caracteres con mayúsculas, minúsculas, números y símbolos
+2. **Revisión periódica:** Auditar usuarios activos cada 3 meses
+3. **Principio del menor privilegio:** Asignar solo los permisos mínimos necesarios
+4. **Rotación de contraseñas:** Cambiar contraseñas cada 6 meses
+5. **Desactivación inmediata:** Desactivar usuarios que dejen la empresa
 
 ## 🌐 Deploy en Hosting Compartido
 

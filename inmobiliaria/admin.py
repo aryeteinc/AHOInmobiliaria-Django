@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import AdminSite
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from django.utils.translation import gettext_lazy as _
 from django.utils.html import format_html
 from .forms import EtiquetasForm, InmueblesForm
@@ -639,4 +641,57 @@ class ImagenesAdmin(admin.ModelAdmin):
     
     created_at_formatted.short_description = 'Fecha'
     created_at_formatted.admin_order_field = 'created_at'
+
+# Configuración personalizada para User y Group - Solo superusuarios
+class RestrictedUserAdmin(UserAdmin):
+    """Admin de usuarios restringido solo a superusuarios"""
+    
+    def has_module_permission(self, request):
+        """Solo superusuarios pueden ver el módulo de usuarios"""
+        return request.user.is_superuser
+    
+    def has_view_permission(self, request, obj=None):
+        """Solo superusuarios pueden ver usuarios"""
+        return request.user.is_superuser
+    
+    def has_add_permission(self, request):
+        """Solo superusuarios pueden crear usuarios"""
+        return request.user.is_superuser
+    
+    def has_change_permission(self, request, obj=None):
+        """Solo superusuarios pueden editar usuarios"""
+        return request.user.is_superuser
+    
+    def has_delete_permission(self, request, obj=None):
+        """Solo superusuarios pueden eliminar usuarios"""
+        return request.user.is_superuser
+
+class RestrictedGroupAdmin(GroupAdmin):
+    """Admin de grupos restringido solo a superusuarios"""
+    
+    def has_module_permission(self, request):
+        """Solo superusuarios pueden ver el módulo de grupos"""
+        return request.user.is_superuser
+    
+    def has_view_permission(self, request, obj=None):
+        """Solo superusuarios pueden ver grupos"""
+        return request.user.is_superuser
+    
+    def has_add_permission(self, request):
+        """Solo superusuarios pueden crear grupos"""
+        return request.user.is_superuser
+    
+    def has_change_permission(self, request, obj=None):
+        """Solo superusuarios pueden editar grupos"""
+        return request.user.is_superuser
+    
+    def has_delete_permission(self, request, obj=None):
+        """Solo superusuarios pueden eliminar grupos"""
+        return request.user.is_superuser
+
+# Re-registrar User y Group con las clases restringidas
+admin.site.unregister(User)
+admin.site.unregister(Group)
+admin.site.register(User, RestrictedUserAdmin)
+admin.site.register(Group, RestrictedGroupAdmin)
 
