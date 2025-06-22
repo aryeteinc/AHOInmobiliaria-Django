@@ -1,0 +1,98 @@
+/**
+ * Estilos para widget de moneda con formato completo
+ */
+
+.currency-input {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+    color: #2d5016;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    min-width: 180px;
+    position: relative;
+}
+
+.currency-input:focus {
+    border-color: #28a745;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    background-color: #ffffff;
+    color: #155724;
+}
+
+.currency-input:hover {
+    border-color: #28a745;
+    background-color: #ffffff;
+}
+
+.currency-input::placeholder {
+    color: #6c757d;
+    font-style: italic;
+    font-weight: normal;
+}
+
+/* Estilo para el símbolo de peso */
+.currency-input:focus::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #28a745;
+    font-weight: bold;
+}
+
+/* Estilos específicos para el admin de Django */
+.form-row .currency-input {
+    width: 220px;
+}
+
+/* Para inlines */
+.inline-group .currency-input {
+    width: 160px;
+    font-size: 13px;
+}
+
+/* Mejoras visuales para números grandes */
+.currency-input[value*="000,000"] {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-color: #28a745;
+}
+
+.currency-input[value*="000,000,000"] {
+    background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+    border-color: #155724;
+    color: #155724;
+    font-weight: 600;
+}
+
+/* Indicador visual de campo de moneda */
+.field-precio_venta .currency-input::before,
+.field-precio_canon .currency-input::before,
+.field-precio_administracion .currency-input::before,
+.field-precio_total .currency-input::before {
+    content: '$';
+    position: absolute;
+    left: 8px;
+    color: #6c757d;
+    font-weight: bold;
+}
+
+/* Clase para campos con errores */
+.currency-input.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Responsivo para pantallas pequeñas */
+@media (max-width: 768px) {
+    .currency-input {
+        width: 100%;
+        min-width: auto;
+    }
+}

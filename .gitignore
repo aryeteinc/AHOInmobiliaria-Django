@@ -1,0 +1,219 @@
+# =================================================================
+# .gitignore para Proyecto Django + Poetry + TinyMCE
+# Optimizado para AHO Inmobiliaria Backend
+# =================================================================
+
+# ===== PYTHON =====
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ===== ENTORNOS VIRTUALES =====
+# Poetry
+.venv/
+venv/
+env/
+ENV/
+
+# Pipenv
+Pipfile.lock
+
+# virtualenv
+pyvenv.cfg
+
+# ===== DJANGO =====
+# Base de datos
+*.sqlite3
+*.db
+
+# Archivos de migración auto-generados (solo si son temporales)
+# migrations/0*_auto_*.py
+
+# Archivos de configuración local
+local_settings.py
+.env
+.env.local
+.env.production
+
+# Archivos de log
+*.log
+
+# Cache de Django
+django_cache/
+
+# Archivos estáticos compilados (collectstatic)
+staticfiles/
+static_root/
+
+# Archivos media sensibles (mantener estructura pero no contenido)
+media/
+# Pero permitir algunos archivos ejemplo
+!media/.gitkeep
+!media/*/
+!media/*/.gitkeep
+
+# ===== DESARROLLO =====
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===== SISTEMA OPERATIVO =====
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ===== HERRAMIENTAS ESPECÍFICAS =====
+# TinyMCE uploads temporales
+tinymce_uploads/
+
+# Backups de base de datos
+*.dump
+*.sql.gz
+backup_*
+
+# Certificados SSL/TLS
+*.pem
+*.key
+*.crt
+*.csr
+
+# Archivos de configuración de servidor
+nginx.conf
+apache.conf
+uwsgi.ini
+gunicorn.conf
+
+# ===== DEPENDENCIAS Y CACHE =====
+# npm (si usas frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Bower
+bower_components/
+
+# Cache de Python
+.cache/
+
+# ===== ARCHIVOS TEMPORALES =====
+# Archivos temporales del editor
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# Archivos de lock temporales
+*.lock
+
+# ===== DOCUMENTACIÓN =====
+# Sphinx documentation
+docs/_build/
+
+# ===== SECRETOS Y CONFIGURACIÓN =====
+# Variables de entorno sensibles
+.env*
+!.env.example
+
+# Claves API y configuración de producción
+secrets.json
+config/production.py
+
+# ===== ARCHIVOS DE DEPLOYMENT =====
+# Docker
+.dockerignore
+Dockerfile.prod
+
+# Archivos de deployment
+deploy/
+scripts/deploy.sh
+
+# ===== MONITOREO Y DEBUGGING =====
+# Archivos de profiling
+*.prof
+
+# Dumps de memoria
+*.hprof
+core.*
+
+# Error logs específicos
+error.log
+access.log
+debug.log
+
+# ===== ESPECÍFICO DEL PROYECTO =====
+# Archivos de configuración local de inmobiliaria
+local_config.py
+dev_settings.py
+
+# Datos de prueba sensibles
+test_data/real_data/
+fixtures/production/
+
+# Reportes generados
+reports/
+exports/
+
+# Cache de imágenes procesadas
+image_cache/
+thumbnails/
+
+# ===== COMENTARIOS ÚTILES =====
+# Para incluir un archivo que normalmente sería ignorado:
+# !path/to/important/file.ext
+
+# Para ignorar todo en un directorio excepto algunos archivos:
+# folder/*
+# !folder/.gitkeep
+# !folder/important.file
