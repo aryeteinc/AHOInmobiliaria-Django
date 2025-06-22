@@ -29,12 +29,18 @@ def formatear_moneda(campo, etiqueta):
     _metodo.__name__ = f'{campo}_formateado'
     return _metodo
 
+# Personalización del admin predeterminado
+admin.site.site_header = "AHOInmobiliaria Administración"
+admin.site.site_title = "AHOInmobiliaria Admin"
+admin.site.index_title = "Bienvenido al Panel de Administración de AHOInmobiliaria"
+
+# Clase AdminSite personalizada (alternativa si se necesita en el futuro)
 class InmobiliariaAdminSite(AdminSite):
-    site_header = _("Inmobiliaria Administration")
-    site_title = _("Inmobiliaria Admin")
-    index_title = _("Welcome to the Inmobiliaria Admin")
+    site_header = "AHOInmobiliaria Administración"
+    site_title = "AHOInmobiliaria Admin"
+    index_title = "Bienvenido al Panel de Administración de AHOInmobiliaria"
     
-admin_site = InmobiliariaAdminSite(name='inmobiliaria_admin')
+# admin_site = InmobiliariaAdminSite(name='inmobiliaria_admin')
 
 # Inline para InmuebleCaracteristicas
 class InmuebleCaracteristicasInline(admin.TabularInline):

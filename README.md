@@ -44,7 +44,7 @@ Sistema completo de gestión inmobiliaria desarrollado en Django con interfaces 
 - **Base de Datos**: MySQL 8.0+
 - **Manejo de Imágenes**: Pillow
 - **Editor de Texto**: TinyMCE
-- **Gestión de Dependencias**: Poetry
+- **Gestión de Dependencias**: pip + venv
 - **Variables de Entorno**: python-dotenv
 - **Conector DB**: PyMySQL
 
@@ -55,8 +55,8 @@ Sistema completo de gestión inmobiliaria desarrollado en Django con interfaces 
 # Python 3.10 o superior
 python --version
 
-# Poetry (instalación)
-curl -sSL https://install.python-poetry.org | python3 -
+# pip (incluido con Python)
+pip --version
 
 # MySQL Server 8.0+
 # Descargar desde: https://dev.mysql.com/downloads/mysql/
@@ -70,24 +70,21 @@ git clone <url-del-repositorio>
 cd Backend
 ```
 
-2. **Configurar Poetry y dependencias**
+2. **Crear entorno virtual**
 ```bash
-# Configurar Poetry para usar .venv local
-poetry config virtualenvs.in-project true
+# Crear entorno virtual
+python3 -m venv venv
 
-# Instalar dependencias
-poetry install
+# Activar entorno virtual
+source venv/bin/activate  # Linux/Mac
+# o
+venv\Scripts\activate     # Windows
 ```
 
-3. **Activar entorno virtual**
+3. **Instalar dependencias**
 ```bash
-# Opción 1: Con Poetry
-poetry shell
-
-# Opción 2: Activación manual
-source .venv/bin/activate  # Linux/Mac
-# o
-.venv\Scripts\activate     # Windows
+# Con entorno virtual activado
+pip install -r requirements.txt
 ```
 
 4. **Configurar variables de entorno**
@@ -111,17 +108,23 @@ FLUSH PRIVILEGES;
 
 6. **Ejecutar migraciones**
 ```bash
-poetry run python manage.py migrate
+# Con entorno virtual activado
+python manage.py migrate
 ```
 
 7. **Crear superusuario**
 ```bash
-poetry run python manage.py createsuperuser
+# Con entorno virtual activado
+python manage.py createsuperuser
 ```
 
 8. **Ejecutar servidor de desarrollo**
 ```bash
-poetry run python manage.py runserver
+# Con entorno virtual activado
+python manage.py runserver
+
+# O en una línea (recomendado)
+source venv/bin/activate && python manage.py runserver
 ```
 
 ## ⚙️ Configuración
@@ -418,11 +421,15 @@ Usar las credenciales del superusuario creado durante la instalación.
 
 1. **Preparar archivos para producción**
 ```bash
-# Generar requirements.txt desde Poetry
-poetry export -f requirements.txt --output requirements.txt --without-hashes
+# Activar entorno virtual
+source venv/bin/activate
 
 # Recolectar archivos estáticos
-poetry run python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput
+
+# Verificar que requirements.txt esté actualizado
+pip freeze > requirements_current.txt
+# Comparar con requirements.txt si es necesario
 ```
 
 2. **Configurar settings para producción**
@@ -540,11 +547,12 @@ su - inmobiliaria
 git clone <url-repositorio> /home/inmobiliaria/app
 cd /home/inmobiliaria/app
 
-# Configurar Poetry
-curl -sSL https://install.python-poetry.org | python3 -
-export PATH="/home/inmobiliaria/.local/bin:$PATH"
-poetry config virtualenvs.in-project true
-poetry install --only=main
+# Crear entorno virtual
+python3 -m venv venv
+source venv/bin/activate
+
+# Instalar dependencias
+pip install -r requirements.txt
 
 # Configurar variables de entorno
 cp .env.example .env
@@ -628,9 +636,10 @@ sudo systemctl restart nginx
 
 # Ejecutar migraciones y recolectar estáticos
 cd /home/inmobiliaria/app
-poetry run python manage.py migrate
-poetry run python manage.py collectstatic --noinput
-poetry run python manage.py createsuperuser
+source venv/bin/activate
+python manage.py migrate
+python manage.py collectstatic --noinput
+python manage.py createsuperuser
 
 # Iniciar supervisor
 sudo supervisorctl reread
@@ -717,8 +726,8 @@ echo "web: gunicorn core.wsgi:application" > Procfile
 # runtime.txt
 echo "python-3.10.12" > runtime.txt
 
-# requirements.txt (generar desde Poetry)
-poetry export -f requirements.txt --output requirements.txt --without-hashes
+# requirements.txt (ya incluido en el proyecto)
+# Verificar que esté actualizado con: pip freeze
 ```
 
 2. **Deploy**
@@ -839,9 +848,10 @@ fi
 # Proceso de actualización en VPS
 cd /home/inmobiliaria/app
 git pull origin main
-poetry install
-poetry run python manage.py migrate
-poetry run python manage.py collectstatic --noinput
+source venv/bin/activate
+pip install -r requirements.txt --upgrade
+python manage.py migrate
+python manage.py collectstatic --noinput
 sudo supervisorctl restart inmobiliaria
 ```
 
@@ -875,13 +885,13 @@ tail -f /var/log/inmobiliaria.log
 python manage.py check --deploy
 ```
 
-#### 4. Problemas con Poetry
+#### 4. Problemas con entorno virtual
 ```bash
-# Limpiar cache
-poetry cache clear pypi --all
-# Reinstalar dependencias
-rm poetry.lock
-poetry install
+# Recrear entorno virtual
+rm -rf venv
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
 #### 5. Imágenes no se suben
@@ -935,33 +945,39 @@ sudo journalctl -f
 
 ### Desarrollo Local
 ```bash
-# Instalar dependencias de desarrollo
-poetry install --with dev
+# Activar entorno virtual
+source venv/bin/activate
+
+# Instalar dependencias (incluyendo desarrollo)
+pip install -r requirements.txt
 
 # Formatear código
-poetry run black .
+black .
 
 # Crear nueva migración
-poetry run python manage.py makemigrations
+python manage.py makemigrations
 
 # Ejecutar tests (cuando se implementen)
-poetry run python manage.py test
+python manage.py test
 ```
 
 ### Estructura del Proyecto
 ```
 Backend/
-├── core/                 # Configuración Django
-├── inmobiliaria/         # App principal
-│   ├── models.py        # Modelos de datos
-│   ├── admin.py         # Configuración admin
-│   ├── forms.py         # Formularios personalizados
-│   └── static/          # Archivos estáticos
-├── media/               # Archivos subidos
-├── staticfiles/         # Archivos estáticos recolectados
-├── .env.example         # Variables de entorno ejemplo
-├── CLAUDE.md           # Documentación para IA
-└── README.md           # Este archivo
+├── venv/                # Entorno virtual (no subir a git)
+├── core/                # Configuración Django
+├── inmobiliaria/        # App principal
+│   ├── models.py       # Modelos de datos
+│   ├── admin.py        # Configuración admin
+│   ├── forms.py        # Formularios personalizados
+│   └── static/         # Archivos estáticos
+├── media/              # Archivos subidos
+├── staticfiles/        # Archivos estáticos recolectados
+├── requirements.txt    # Dependencias del proyecto
+├── .env.example        # Variables de entorno ejemplo
+├── CLAUDE.md          # Documentación para IA
+├── GUIA_VENV.md       # Guía de uso con venv
+└── README.md          # Este archivo
 ```
 
 ## 📞 Soporte

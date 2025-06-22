@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",  # Middleware de localización
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -110,13 +111,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "es-co"  # Español Colombia
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Bogota"  # Zona horaria de Colombia
 
-USE_I18N = True
+USE_I18N = True  # Internacionalización habilitada
 
-USE_TZ = True
+USE_L10N = True  # Localización habilitada 
+
+USE_TZ = True  # Zona horaria habilitada
 
 
 # Static files (CSS, JavaScript, Images)
@@ -176,3 +179,27 @@ TINYMCE_SIMPLE_CONFIG = {
     'menubar': False,
     'statusbar': False,
 }
+
+# =============================================================================
+# CONFIGURACIÓN DE IDIOMAS Y LOCALIZACIÓN
+# =============================================================================
+
+# Idiomas disponibles en la aplicación
+LANGUAGES = [
+    ('es', 'Español'),
+    ('es-co', 'Español (Colombia)'),
+    ('en', 'English'),
+]
+
+# Formato de fecha y hora en español colombiano
+DATE_FORMAT = 'd/m/Y'
+DATETIME_FORMAT = 'd/m/Y H:i'
+TIME_FORMAT = 'H:i'
+
+# Formato de números (separador de miles y decimales)
+USE_THOUSAND_SEPARATOR = True
+THOUSAND_SEPARATOR = '.'
+DECIMAL_SEPARATOR = ','
+
+# Primera semana del año empieza en lunes
+FIRST_DAY_OF_WEEK = 1

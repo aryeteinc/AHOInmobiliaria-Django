@@ -32,17 +32,21 @@ share/python-wheels/
 MANIFEST
 
 # ===== ENTORNOS VIRTUALES =====
-# Poetry
-.venv/
+# Entorno virtual tradicional (venv)
 venv/
+.venv/
 env/
 ENV/
 
-# Pipenv
+# Archivos de configuración de entorno virtual
+pyvenv.cfg
+
+# Pipenv (si se usa en el futuro)
 Pipfile.lock
 
-# virtualenv
-pyvenv.cfg
+# Poetry (archivos eliminados del proyecto)
+# pyproject.toml
+# poetry.lock
 
 # ===== DJANGO =====
 # Base de datos
